@@ -24,7 +24,6 @@ export class HomeComponent implements OnInit {
 
     setZip(zipcode:any) {
          this.zcode = zipcode;
-        //   localStorage.setItem('Code ', zipcode);
         let exm = [];
         if(localStorage.getItem('user')) {
           exm = JSON.parse(localStorage.getItem('user') || '{}');
