@@ -1,6 +1,7 @@
 import { getLocaleDateFormat } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-home',
@@ -9,26 +10,38 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
   zipCode!:string
-  data:any;
   key: string = 'Name';
   myItem!: string;
-  zcode!: number;
+  zcode!: number;data:any;
   url = 'http://api.openweathermap.org/data/2.5/weather?id=';
   ccond!: string;      temp!: number;      temp_max!: number;      temp_min!: number;
+  user: any;
   ngOnInit(): void {
       
   }
   sun=false; snow=false; rain=false; clouds=false;
-  constructor(private http: HttpClient) {}
+  constructor(private service: UserService) {}
 
     setZip(zipcode:any) {
-        this.zcode = zipcode;
-          localStorage.setItem('Code ', zipcode);
-          this.getData()
+         this.zcode = zipcode;
+        //   localStorage.setItem('Code ', zipcode);
+        let exm = [];
+        if(localStorage.getItem('user')) {
+          exm = JSON.parse(localStorage.getItem('user') || '{}');
+          exm = [zipcode, ...exm];
+        }else {
+          exm = [zipcode];
         }
+        localStorage.setItem('user',JSON.stringify(exm));
+        this.user=exm
+          this.getData()
+    }
+    sub(){
+      localStorage.removeItem('user');
+    }
 
     getData() {
-        this.http.get(this.url + this.zcode+'&appid=5a4b2d457ecbef9eb2a71e480b947604').subscribe((res) => {
+        this.service.getData(this.url + this.zcode+'&appid=5a4b2d457ecbef9eb2a71e480b947604').subscribe((res) => {
           this.data = res;
           this.ccond = this.data.weather[0].main;
           this.temp = this.data.main.temp;

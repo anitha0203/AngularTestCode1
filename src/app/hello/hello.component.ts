@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-hello',
@@ -11,7 +12,6 @@ export class HelloComponent implements OnInit {
   ngOnInit(): void {
     this.getData();
   }
-  data:any;
   url2='http://api.openweathermap.org/data/2.5/forecast?id=';
   ccond1!: number;    temp_max1!: number;      temp_min1!: number;
   ccond2!: number;    temp_max2!: number;      temp_min2!: number;
@@ -21,16 +21,17 @@ export class HelloComponent implements OnInit {
   d = new Date();day1!: string;mon1!: string;date1!: number;day2!: string;mon2!: string;
 date2!: number;day3!: string;mon3!: string;date3!: number;day4!: string;mon4!: string;
 date4!: number;day5!: string;mon5!: string;
-date5!: number;
+date5!: number;data: any;  zcode1: any;
 weekday = [" ","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",];
 month=["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  constructor(private http: HttpClient) {}
+  constructor(private service: UserService) {}
 
   getData() {
-    
-    let zcode1 = localStorage.getItem('Code ');
-    console.log("    jhdvhfj   zocde" + zcode1)
-    this.http.get(this.url2+zcode1+'&appid=5a4b2d457ecbef9eb2a71e480b947604').subscribe((res) => {
+    let zcode2 = JSON.parse(localStorage.getItem('user') || '{}');
+    let zcode1 = parseInt(zcode2[0])
+    console.log("    jhdvhfj   zocde " + zcode1)
+
+    this.service.getData(this.url2+zcode1+'&appid=5a4b2d457ecbef9eb2a71e480b947604').subscribe((res) => {
       this.data = res;
       this.ccond1 = this.data.list[0].weather[0].main;
       this.temp_max1 = this.data.list[0].main.temp_max;
